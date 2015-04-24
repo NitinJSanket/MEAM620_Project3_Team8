@@ -1,0 +1,36 @@
+function [G, X0] = GenXG(R, N, Extent, verbose)
+% R: Radius of the robot
+% N: Number of Goals = Number of robots
+% Extent: 2X2 vector which has (xlow, ylow;xhigh, yhigh)
+
+%% Rounding off
+Res = 2*sqrt(2)*R;
+ExtentR(1,1) = ceil(Extent(1,1)/Res); % xlow
+ExtentR(2,1) = floor(Extent(2,1)/Res); % xhigh
+ExtentR(1,2) = ceil(Extent(1,2)/Res); % ylow
+ExtentR(2,2) = floor(Extent(2,2)/Res); % yhigh
+Extent(1,1) = ceil(Extent(1,1)); % xlow
+Extent(2,1) = floor(Extent(2,1)); % xhigh
+Extent(1,2) = ceil(Extent(1,2)); % ylow
+Extent(2,2) = floor(Extent(2,2)); % yhigh
+
+%% Generate Goals
+RandLocs1 = randi([ExtentR(1,1),ExtentR(2,1)],2*N,1);
+RandLocs2 = randi([ExtentR(1,2),ExtentR(2,2)],2*N,1);
+G(:,1) = Res.*RandLocs1(1:N);
+G(:,2) = Res.*RandLocs2(1:N);
+%% Generate X0
+X0(:,1) = Res.*RandLocs1(N+1:2*N);
+X0(:,2) = Res.*RandLocs2(N+1:2*N);
+
+if(verbose)
+    figure,
+    plot(G(:,1), G(:,2), 'rp');
+    hold on;
+    plot(X0(:,1), X0(:,2), 'bo');
+    axis([Extent(1,1), Extent(2,1), Extent(1,2), Extent(2,2)]);
+    grid on;
+    set(gca,'xtick',[Extent(1,1):Res:Extent(2,1)]);
+    set(gca,'ytick',[Extent(1,2):Res:Extent(2,2)]);
+end
+end
